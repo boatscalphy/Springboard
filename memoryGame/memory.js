@@ -56,12 +56,19 @@ function init () {
         'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTNIIs5MMepJDpcesueWMBJA98Z7q_7FHU2-HkYzZ1OrQJeKsa2rw&s'
     ];
 
+    //Set user's high score.
+    if (parseInt(localStorage.getItem('highScore'))) {
+        highScore.innerText = localStorage.getItem('highScore');
+    }
+
     //Reset attempt counter
     attempts.innerText = 0;
+
     //Flip all cards back down if any are facing up
     //Set up card images for matching
     for (card of cards) {
         card.classList.remove('flipped');
+        card.classList.remove('active');
     }
     //Add a delay to account for the transition of the card flip before assigning card images
     setTimeout(() => {
@@ -110,7 +117,8 @@ newGame.addEventListener('click',init);
         }
 
         if (remainingMatches === 0) {
-            if (!parseInt(highScore.innerText) || parseInt(attempts.innerText < parseInt(highScore.innerText))){
+            if (!parseInt(highScore.innerText) || parseInt(attempts.innerText) < parseInt(highScore.innerText)){
+                localStorage.setItem('highScore', attempts.innerText);
                 highScore.innerText = attempts.innerText;
             }
         }
