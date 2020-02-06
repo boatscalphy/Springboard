@@ -1,11 +1,9 @@
-let todoItems = JSON.parse(localStorage.getItem('todo-list')) || [];
 let listEntry = document.querySelector('input');
 let todoList = document.querySelector('.container-list');
 let submitBtn = document.querySelector('#submit-btn');
 let clearBtn = document.querySelector('#clear-btn');
-
 //Create object to maintain todo items;
-let todo = {}
+let todo = {};
 //Add event listeners to add todo items
 listEntry.addEventListener('keypress',enterItem);
 submitBtn.addEventListener('click', submitItem);
@@ -13,29 +11,35 @@ submitBtn.addEventListener('click', submitItem);
 //Add event listeners to remove todo items and cross out todo items
 clearBtn.addEventListener('click', clearList);
 
-//Load todo items in localStorage
+//Check localstorage if there are items in localstorage build out todo variable with the todo items using submitItem function.
 function init() {
-    if (todoItems.length > 0) {
-        for (items of todoItems) {
-
+    let storage = JSON.parse(localStorage.getItem('todo-list')) || {};
+    if (Object.keys(storage).length > 0) {
+        for (key in storage) {
+            console.log(storage[key].checked);
+            submitItem(storage[key].value, storage[key].checked);
         }
     }
 }
 
-function submitItem(value) {
+function submitItem(value, checked = false) {
+    let numItem = Object.keys(todo).length ? parseInt(Object.keys(todo)[Object.keys(todo).length -1]) + 1 : 1;
     value.length > 0 ? value : value = listEntry.value;
     if (value.length > 0) {
-        todoItems.push(value);
-        localStorage.setItem('todo-list',JSON.stringify(todoItems))
+        todo[numItem] = {
+            'value': value,
+            'checked': checked,
+        }
+        localStorage.setItem('todo-list',JSON.stringify(todo))
         let newItem = `<div class="todo-list">
-        <div class="todo-item">
-            <div class="item">
+        <div class="todo-item" data-entry="${numItem}">
+            <div class="item ${todo[numItem].checked ? "checked" : ""}">
                 <p>${value}</p>
             </div>
             <div>
-                <button class='btn check-btn'>Check</button>
+                <button class='btn check-btn ${todo[numItem].checked ? "uncheck-btn" : ""}'>${todo[numItem].checked ? "Uncheck" : "Check"}</button>
             </div>
-            <div class='hidden'>
+            <div class="${todo[numItem].checked ? "" : "hidden"}">
                 <button class='btn delete-btn'>Delete</button>
             </div>
         </div>
@@ -54,17 +58,19 @@ function enterItem(e) {
     if (e.charCode === 13) {
         submitItem(listEntry.value);
     }
-
 }
 
+//function to clear all todo list items
 function clearList() {
     todoList.innerHTML = ""
     localStorage.clear();
-    todoItems = [];
+    todo = {};
 }
 
-//Could have used event delegation instead -- potentially refactor later.
 function checkItem(e) {
+    let itemNum = e.toElement.parentElement.parentElement.dataset.entry;
+    todo[itemNum].checked = todo[itemNum].checked ? false : true;
+    localStorage.setItem('todo-list', JSON.stringify(todo));
     let buttonElement = e.toElement;
     let todoItemClass = e.toElement.parentElement.previousElementSibling.classList;
     todoItemClass.toggle('checked');
@@ -82,5 +88,13 @@ function checkItem(e) {
 }
 
 function deleteItem(e) {
+    //use dataset of entry to locate the key that needs to be deleted from the todo list.
+    let itemNum = e.toElement.parentElement.parentNode.dataset['entry'];
+    delete todo[itemNum];
+    //remove todo item from DOM
     e.toElement.parentElement.parentNode.parentNode.remove()
+    // update localstorage.
+    localStorage.setItem('todo-list',JSON.stringify(todo));
 }
+
+init();
