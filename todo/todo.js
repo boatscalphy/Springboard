@@ -16,7 +16,6 @@ function init() {
     let storage = JSON.parse(localStorage.getItem('todo-list')) || {};
     if (Object.keys(storage).length > 0) {
         for (key in storage) {
-            console.log(storage[key].checked);
             submitItem(storage[key].value, storage[key].checked);
         }
     }
