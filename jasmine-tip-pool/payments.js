@@ -9,6 +9,7 @@ let allPayments = {};
 let paymentId = 0;
 
 paymentForm.addEventListener('submit', submitPaymentInfo);
+paymentTbody.addEventListener('click', deletePaymentTr);
 
 // Add a curPayment object to allPayments, update html and reset input values
 function submitPaymentInfo(evt) {
@@ -55,6 +56,7 @@ function appendPaymentTable(curPayment) {
   appendTd(newTr, '$' + curPayment.billAmt);
   appendTd(newTr, '$' + curPayment.tipAmt);
   appendTd(newTr, curPayment.tipPercent + '%');
+  appendDeleteBtn(newTr);
 
   paymentTbody.append(newTr);
 }
@@ -76,3 +78,22 @@ function updateSummary() {
   summaryTds[2].innerHTML =  Math.round(tipPercentAvg) + '%';
 }
 
+//Create delete button on table row to delete items
+function appendDeleteBtn(tr) {
+  let newTd = document.createElement('td');
+  newTd.innerText = 'X';
+
+  tr.append(newTd)
+}
+
+//delete payment from DOM and from allPayments object
+function deletePaymentTr(evt) {
+  if (evt.target.innerText === 'X') {
+
+    let evtTd = evt.target.parentElement;
+    evtTd.remove();
+    delete allPayments[evtTd.id]
+  }
+  
+  updateSummary();
+}

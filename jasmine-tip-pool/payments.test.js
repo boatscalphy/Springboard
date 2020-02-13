@@ -3,7 +3,7 @@ describe('tests for payment.js', function() {
         billAmtInput.value = 100;
         tipAmtInput.value = 50;
     });
-
+    
     it('should update the allPayments object with payment details', function() {
         submitPaymentInfo();
         expect(paymentId).toEqual(1)
@@ -11,13 +11,20 @@ describe('tests for payment.js', function() {
         expect(allPayments.payment1.tipAmt).toEqual('50');
         expect(allPayments.payment1.tipPercent).toEqual(50);
     })
+    
+    it('should update shift totals', function() {
+        submitPaymentInfo();
+        expect(summaryTds[0].innerText).toEqual("$100");
+        expect(summaryTds[1].innerText).toEqual("$50");
+        expect(summaryTds[2].innerText).toEqual("50%");
+    })
 
     it('should not update allPayments object if billAmt is invalid', function() {
         billAmtInput.value = 0;
         tipAmtInput.value = 0;
         submitPaymentInfo();
 
-        expect(paymentID).toEqual(0);
+        expect(paymentId).toEqual(0);
         expect(Object.keys(allPayments).length).toEqual(0);
     })
 
@@ -50,7 +57,10 @@ describe('tests for payment.js', function() {
         billAmtInput.value = "";
         tipAmtInput.value = "";
         paymentTbody.innerHTML = "";
-        paymentID = 0;
+        paymentId = 0;
         allPayments = {};
+        summaryTds[0].innerText = "";
+        summaryTds[1].innerText = "";
+        summaryTds[2].innerText = "";
     })
 })

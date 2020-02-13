@@ -7,6 +7,7 @@ let allServers = {};
 let serverId = 0;
 
 serverForm.addEventListener('submit', submitServerInfo);
+serverTbody.addEventListener('click', deleteServerTr);
 
 // create server object and add to allServers, update html and reset input
 function submitServerInfo(evt) {
@@ -37,8 +38,21 @@ function updateServerTable() {
     let tipAverage = sumPaymentTotal('tipAmt') / Object.keys(allServers).length;
 
     appendTd(newTr, curServer.serverName);
-    appendTd(newTr, '$' + tipAverage.toFixed(2));
+    appendTd(newTr, '$' + tipAverage.toFixed(2))
+    appendDeleteBtn(newTr);
 
     serverTbody.append(newTr);
   }
+}
+
+//Delete server details
+function deleteServerTr(evt) {
+  if (evt.target.innerText === 'X') {
+
+    let evtTd = evt.target.parentElement;
+    evtTd.remove();
+    delete allServers[evtTd.id]
+  }
+  
+  updateServerTable();
 }
