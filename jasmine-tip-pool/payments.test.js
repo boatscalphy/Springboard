@@ -4,7 +4,24 @@ describe('tests for payment.js', function() {
         tipAmtInput.value = 50;
     });
 
-    it('should return falsey if billamt is empty or an object containing the payment', function() {
+    it('should update the allPayments object with payment details', function() {
+        submitPaymentInfo();
+        expect(paymentId).toEqual(1)
+        expect(allPayments.payment1.billAmt).toEqual('100');
+        expect(allPayments.payment1.tipAmt).toEqual('50');
+        expect(allPayments.payment1.tipPercent).toEqual(50);
+    })
+
+    it('should not update allPayments object if billAmt is invalid', function() {
+        billAmtInput.value = 0;
+        tipAmtInput.value = 0;
+        submitPaymentInfo();
+
+        expect(paymentID).toEqual(0);
+        expect(Object.keys(allPayments).length).toEqual(0);
+    })
+
+    it('should return undefined if billamt is empty or an object containing the payment', function() {
         expect(createCurPayment()).toEqual({
             billAmt: '100',
             tipAmt: '50',
@@ -19,13 +36,20 @@ describe('tests for payment.js', function() {
         expect(createCurPayment()).toBeUndefined();
     })
 
-    it('should update the shift summary table with the totals of the bill amounts, but not update if payment details are empty', function() {
-        
+    it('should create a new row for payment information', function() {
+        appendPaymentTable(createCurPayment());
+        expect(paymentTbody.rows.length).toEqual(1)
+
+        billAmtInput.value = 100;
+        tipAmtInput.value = 50;
+        appendPaymentTable(createCurPayment());
+        expect(paymentTbody.rows.length).toEqual(2);
     })
 
     afterEach(function() {
         billAmtInput.value = "";
         tipAmtInput.value = "";
+        paymentTbody.innerHTML = "";
         paymentID = 0;
         allPayments = {};
     })
