@@ -85,6 +85,7 @@ class Game {
   /** endGame: announce game end */
 
   endGame(msg) {
+    this.gameActive = false;
     alert(msg);
   };
 
@@ -161,5 +162,8 @@ class Player {
   }
 }
 
+const p1 = document.getElementById('p1-color');
+const p2 = document.getElementById('p2-color');
+document.querySelector("button").addEventListener('click',)
 makeBoard();
 makeHtmlBoard();
