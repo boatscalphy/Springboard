@@ -19,7 +19,7 @@ class Game {
   */
 
   makeBoard() {
-    for (let y = 0; y < HEIGHT; y++) {
+    for (let y = 0; y < this.height; y++) {
       this.board.push(Array.from({ length: this.width }));
     }
   };
@@ -28,11 +28,12 @@ class Game {
 
   makeHtmlBoard() {
     const board = document.getElementById('board');
-
+    board.innerHTML = "";
     // make column tops (clickable area for adding a piece to that column)
     const top = document.createElement('tr');
+    const handleClickCallback = this.handleClick.bind(this);
     top.setAttribute('id', 'column-top');
-    top.addEventListener('click', handleClick);
+    top.addEventListener('click', handleClickCallback);
 
     for (let x = 0; x < this.width; x++) {
       const headCell = document.createElement('td');
@@ -54,10 +55,7 @@ class Game {
 
       board.append(row);
     }
-
-    
-  };
-
+  }
   /** findSpotForCol: given column x, return top empty y (null if filled) */
 
   findSpotForCol(x) {
@@ -69,54 +67,66 @@ class Game {
     return null;
   };
 
-
   /** placeInTable: update DOM to place piece into HTML table of board */
 
   placeInTable(y, x) {
     const piece = document.createElement('div');
     piece.classList.add('piece');
-    piece.classList.add(`p${this.activePlayer}`);
-    piece.style.top = -50 * (y + 2);
+    const playerInd = (this.activePlayer) - 1;
+    const playerColor = this.players[playerInd].color;
+ 
+    if (playerColor) {
+      piece.style.backgroundColor = playerColor;
+    }
+    
+    else {
+      piece.classList.add(`p${this.activePlayer}`);
+    }
 
+    piece.style.top = `${-50 * (y + 2)}px`;
     const spot = document.getElementById(`${y}-${x}`);
     spot.append(piece);
+    setTimeout(() => piece.style.top = 0, 0);
   };
 
   /** endGame: announce game end */
 
   endGame(msg) {
     this.gameActive = false;
-    alert(msg);
+    setTimeout(() => alert(msg), 500);
   };
 
   /** handleClick: handle click of column top to play piece */
 
   handleClick(evt) {
-    // get x from ID of clicked cell
-    const x = +evt.target.id;
-
-    // get next spot in column (if none, ignore click)
-    const y = findSpotForCol(x);
-    if (y === null) {
-      return;
-    }
-
-    // place piece in board and add to HTML table
-    this.board[y][x] = this.activePlayer;
-    placeInTable(y, x);
     
-    // check for win
-    if (checkForWin()) {
-      return endGame(`Player ${this.players[this.activePlayer-1]} won!`);
-    }
-    
-    // check for tie
-    if (this.board.every(row => row.every(cell => cell))) {
-      return endGame('Tie!');
-    }
+    if (this.gameActive) {
+       // get x from ID of clicked cell
+      const x = +evt.target.id;
+
+      // get next spot in column (if none, ignore click)
+      const y = this.findSpotForCol(x);
+      if (y === null) {
+        return;
+      }
+
+      // place piece in board and add to HTML table
+      this.board[y][x] = this.activePlayer;
+      this.placeInTable(y, x);
       
-    // switch players
-    this.activePlayer = this.activePlayer === 1 ? 2 : 1;
+      // check for win
+      if (this.checkForWin()) {
+        return this.endGame(`Player ${this.activePlayer} won!`);
+      }
+      
+      // check for tie
+      if (this.board.every(row => row.every(cell => cell))) {
+        return this.endGame('Tie!');
+      }
+        
+      // switch players
+      this.activePlayer = this.activePlayer === 1 ? 2 : 1;
+    }
   }
 
   /** checkForWin: check board cell-by-cell for "does a win start here?" */
@@ -153,17 +163,36 @@ class Game {
       }
     }
   }
-
 }
 
 class Player {
   constructor(color) {
-    this.color = color;
+
+    let colorCheck = new Option().style;
+    colorCheck.backgroundColor = color;
+
+    if (colorCheck.backgroundColor) {
+      this.color = color;
+    }
+
+    else {
+      this.color = null;
+    }
+
   }
 }
 
-const p1 = document.getElementById('p1-color');
-const p2 = document.getElementById('p2-color');
-document.querySelector("button").addEventListener('click',)
-makeBoard();
-makeHtmlBoard();
+const p1Color = document.getElementById('p1-color');
+const p2Color = document.getElementById('p2-color');
+
+document.querySelector("button").addEventListener('click', () => {
+  const player1 = new Player(p1Color.value);
+  const player2 = new Player(p2Color.value);
+  p1Color.value = ""
+  p2Color.value = ""
+
+  const connectFour = new Game(player1, player2);
+  connectFour.makeBoard();
+  connectFour.makeHtmlBoard();
+})
+
