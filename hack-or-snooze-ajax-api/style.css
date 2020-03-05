@@ -35,8 +35,6 @@ a:hover {
   display: none;
 }
 
-
-
 nav {
   display: flex;
   background-color: #ff6600;
@@ -47,6 +45,14 @@ nav {
 
 .main-nav-links {
   margin: 0 15px;
+}
+
+#user-nav {
+  margin-left: .5rem;
+}
+
+.user-link {
+  margin: 0 .25rem;
 }
 
 .nav-link {

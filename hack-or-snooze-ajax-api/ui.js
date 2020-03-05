@@ -8,10 +8,15 @@ $(async function() {
   const $ownStories = $("#my-articles");
   const $navLogin = $("#nav-login");
   const $navLogOut = $("#nav-logout");
+  const $navPost = $("#nav-post");
+  const $addArticleForm = $('#submit-form');
+  const $editArticleForm = $('#edit-article-form');
+  const $userNav = $('#user-nav');
+  const $userLogout = $('#user-logout');
 
   // global storyList variable
   let storyList = null;
-
+ 
   // global currentUser variable
   let currentUser = null;
 
@@ -24,17 +29,48 @@ $(async function() {
 
   $loginForm.on("submit", async function(evt) {
     evt.preventDefault(); // no page-refresh on submit
-
     // grab the username and password
     const username = $("#login-username").val();
     const password = $("#login-password").val();
 
     // call the login static method to build a user instance
     const userInstance = await User.login(username, password);
-    // set the global user to the user instance
-    currentUser = userInstance;
-    syncCurrentUserToLocalStorage();
-    loginAndSubmitForm();
+    if (userInstance instanceof Object) {
+      // set the global user to the user instance
+      currentUser = userInstance;
+      syncCurrentUserToLocalStorage();
+      loginAndSubmitForm();
+      updateProfileInfo();
+    }
+    else {
+      alert('Invalid username or password');
+    }
+  });
+
+  /**
+   * Event listener to add a new post if a user is logged in 
+   */
+
+  $navPost.on("click", function(evt) {
+    evt.preventDefault();
+    $addArticleForm.slideToggle();
+  })
+
+  /**
+   * Event listener to submit a new post once logged in
+   */
+
+  $addArticleForm.on('submit', async function(evt) {
+    const fields = {
+      author: $('#author').val(),
+      title: $('#title').val(),
+      url: $('#url').val()
+    }
+    const newStory = await storyList.addStory(currentUser, fields);
+    storyList.stories.push(newStory);
+    let storyHTML = generateStoryHTML(newStory);
+    $allStoriesList.append(storyHTML);
+    $submitForm.trigger('reset');
   });
 
   /**
@@ -44,17 +80,23 @@ $(async function() {
 
   $createAccountForm.on("submit", async function(evt) {
     evt.preventDefault(); // no page refresh
-
     // grab the required fields
     let name = $("#create-account-name").val();
     let username = $("#create-account-username").val();
     let password = $("#create-account-password").val();
-
     // call the create method, which calls the API and then builds a new user instance
     const newUser = await User.create(username, password, name);
-    currentUser = newUser;
-    syncCurrentUserToLocalStorage();
-    loginAndSubmitForm();
+
+    if (newUser instanceof Object) {
+      currentUser = newUser;
+      syncCurrentUserToLocalStorage();
+      loginAndSubmitForm();
+      updateProfileInfo();
+    }
+
+    else {
+      alert(newUser);
+    }
   });
 
   /**
@@ -107,6 +149,7 @@ $(async function() {
 
     if (currentUser) {
       showNavForLoggedInUser();
+      updateProfileInfo();
     }
   }
 
@@ -181,7 +224,9 @@ $(async function() {
       $filteredArticles,
       $ownStories,
       $loginForm,
-      $createAccountForm
+      $createAccountForm,
+      $addArticleForm,
+      $editArticleForm
     ];
     elementsArr.forEach($elem => $elem.hide());
   }
@@ -189,6 +234,8 @@ $(async function() {
   function showNavForLoggedInUser() {
     $navLogin.hide();
     $navLogOut.show();
+    $userNav.show();
+    $userLogout.text(`(${currentUser.username}) logout`)
   }
 
   /* simple function to pull the hostname from a URL */
@@ -214,4 +261,11 @@ $(async function() {
       localStorage.setItem("username", currentUser.username);
     }
   }
+
+  function updateProfileInfo() {
+    $("#profile-name").html(`Name: ${currentUser.name}`);
+    $("#profile-username").html(`Username: ${currentUser.username}`)
+    $("#profile-account-date").html(`Member Since: ${currentUser.createdAt}`)
+  }
+  
 });
