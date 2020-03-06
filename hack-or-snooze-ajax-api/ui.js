@@ -17,13 +17,14 @@ $(async function() {
   const $userNav = $('#user-nav');
   const $userLogout = $('#user-logout');
   const $article = $('article');
+  const $userProfile = $('#user-profile');
 
   // global storyList variable
   let storyList = null;
  
   // global currentUser variable
   let currentUser = null;
-
+  hideElements();
   await checkIfLoggedIn();
 
   /**
@@ -78,6 +79,8 @@ $(async function() {
     $allStoriesList.prepend(storyHTML);
     //  Add new story to user's list of stories
     currentUser.ownStories.push(newStory);
+    //  Add new story to user's list of owned stories
+    generateUserStory();
     //  Reset input fields
     $submitForm.trigger('reset');
   });
@@ -161,32 +164,53 @@ $(async function() {
    })
 
   /**
-    * Event handler for (un)favoriting articles
+    * Event handler for (un)favoriting articles and deleting owned articles
   */
   
   $article.on('click', async function(evt) {
     const evtClass = evt.target.classList
     const parent = evt.target.parentNode
-    const storyId = parent.parentNode.dataset.storyId;
+    const li = parent.parentNode
 
+    //  Section for favoriting and unfavoriting
     if (([...evtClass].includes('fas') || [...evtClass].includes('far')) && [...evtClass].includes('fa-star')) {
       evtClass.toggle('fas');
       evtClass.toggle('far');
-      if ([...parent.classList].includes('favorited')) {
-        const newFavorites = await currentUser.favoriteStory(currentUser.loginToken, currentUser.username, storyId, 'delete')
-        currentUser.favorites = newFavorites.user.favorites
-        $(`li[data-story-id="${storyId}"]`).remove()
+      currentUser.favorites = [];
+      if ([...evtClass].includes('far')) {
+        const newFavorites = await currentUser.favoriteStory(currentUser.loginToken, currentUser.username, li.dataset.storyId, 'delete')
+        currentUser.favorites = newFavorites;        
       }
       else {
-        const newFavorites = await currentUser.favoriteStory(currentUser.loginToken, currentUser.username, storyId, 'post')
-        console.log(newFavorites);
-        currentUser.favorites = newFavorites.user.favorites
+        const newFavorites = await currentUser.favoriteStory(currentUser.loginToken, currentUser.username, li.dataset.storyId, 'post')
+        currentUser.favorites = newFavorites;
       }
-      
       parent.classList.toggle('favorited');
+      generateFavoriteStory()
     }
 
-    generateFavoriteStory()
+    //  Section for deleting articles
+    if ([...evtClass].includes('fa-trash-alt')) {
+      newStories = [];
+      const deletedStory = await currentUser.deleteStory(currentUser.loginToken, li.dataset.storyId);
+      for (story of currentUser.ownStories) {
+        if (!(JSON.stringify(story) === JSON.stringify(deletedStory))) {
+          newStories.push(story);
+        }
+      }
+      currentUser.ownStories = newStories;
+      generateUserStory();
+    }
+  })
+
+  /**
+   *  Eventlistener to edit/ view user settings
+   */
+
+  $userLogout.on('click', '#nav-current-user', function(evt) {
+    hideElements();
+    $allStoriesList.hide();
+    $userProfile.show();
   })
 
   /**
@@ -209,6 +233,7 @@ $(async function() {
       showNavForLoggedInUser();
       updateProfileInfo();
       generateFavoriteStory()
+      generateUserStory()
     }
   }
 
@@ -232,6 +257,7 @@ $(async function() {
     showNavForLoggedInUser();
     generateStories();
     generateFavoriteStory()
+    generateUserStory()
   }
 
   /**
@@ -264,7 +290,8 @@ $(async function() {
     //  If user is logged in check add functionality for favoriting article
     if (currentUser) {
       const favoriteStories = currentUser.favorites.map(story => {return story.storyId})
-      if (favoriteStories.includes(story.storyId)){
+      const userStories = currentUser.ownStories.map(story => {return story.storyId})
+      if (favoriteStories.includes(story.storyId) || (userStories.includes(story.storyId) && favoriteStories.includes(story.storyId))){
         const storyMarkup = $(`
         <li data-story-id="${story.storyId}">
           <a class="star favorited"><i class="fas fa-star"></i></a>
@@ -317,7 +344,6 @@ $(async function() {
   function hideElements() {
     const elementsArr = [
       $submitForm,
-      $allStoriesList,
       $filteredArticles,
       $ownStories,
       $loginForm,
@@ -325,15 +351,17 @@ $(async function() {
       $addArticleForm,
       $editArticleForm,
       $favoriteArticles,
+      $userProfile
     ];
     elementsArr.forEach($elem => $elem.hide());
   }
 
   function showNavForLoggedInUser() {
+    $userLogout.show();
     $navLogin.hide();
     $navLogOut.show();
     $userNav.show();
-    $userLogout.text(`(${currentUser.username}) logout`)
+    $navLogOut.before($(`<a id='nav-current-user' href="#"><small>${currentUser.username}</small></a>`))
   }
 
   /* simple function to pull the hostname from a URL */
@@ -372,16 +400,35 @@ $(async function() {
     if (currentUser && currentUser.favorites.length > 0) {
       //array of user's favorite stories
       $favoriteArticles.empty();
-      if ($('#favorited-articles > li').length === 0) {
-        $favoriteArticles.append($(`<p>No favorites added!</p>`));
-      }
       const userFavorites = currentUser.favorites;
       for (story of userFavorites) {
-        console.log(story);
         const result = generateStoryHTML(story)
         $favoriteArticles.append(result)
       }
     }
+
+    if (currentUser.favorites.length === 0) {
+      $favoriteArticles.empty();
+      $favoriteArticles.append($(`<p>No favorites added!</p>`));
+    }
   }
-  console.dir(currentUser);
+
+  function generateUserStory() {
+    if (currentUser && currentUser.ownStories.length > 0) {
+      //array of user's favorite stories
+      $ownStories.empty();
+      const userStories = currentUser.ownStories;
+      for (story of userStories) {
+        const result = generateStoryHTML(story)
+        $ownStories.append(result)
+      }
+      $('#my-articles > li').prepend(`<a class="trash-can"><i class="far fa-trash-alt"></i></a>`)
+    }
+
+    if (currentUser.ownStories.length === 0) {
+      $ownStories.empty()
+      $ownStories.append($(`<p>No stories posted!</p>`));
+    }
+  }
+
 });

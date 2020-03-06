@@ -29,9 +29,12 @@
         <small>my stories</small>
       </a>
     </span>
-    <a class="hidden nav-right" id="nav-logout" href="#">
-      <small id="user-logout">(logout)</small>
-    </a>
+    <div id="user-logout" class='nav-right hidden'>
+      <a class="hidden nav-right" id="nav-logout" href="#">
+        <small>(logout)</small>
+      </a>
+    </div>
+
   </nav>
   <section class="articles-container container">
     <form action="" class="hidden" id="submit-form">
@@ -63,9 +66,7 @@
       </ul>
     </article>
     <article>
-      <ul id="my-articles" class="hidden articles-list">
-        <p>You have no stories!</p>
-      </ul>
+      <ul id="my-articles" class="hidden articles-list"></ul>
     </article>
   </section>
   <section class="edit-article-container container">
@@ -109,7 +110,7 @@
       <button type="submit">create account</button>
     </form>
   </section>
-  <section id="user-profile" class="container hidden">
+  <section id="user-profile" class="hidden container">
     <h4>User Profile Info</h4>
     <section>
       <div id="profile-name">Name:</div>

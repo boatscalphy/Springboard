@@ -182,19 +182,33 @@ class User {
   }
 
   async favoriteStory(token, username, storyId, method='post') {
-    
+    const newFavorites = [];
     if (method === 'post') {
       let response = await axios.post(`${BASE_URL}/users/${username}/favorites/${storyId}`, {token})
-      response = response.data
-      return response
+      response = response.data.user.favorites;
+      for (story of response) {
+        newFavorites.push(new Story(story));
+      }
+      return newFavorites
     }
 
     else {
       let response = await axios.delete(`${BASE_URL}/users/${username}/favorites/${storyId}`, {params: {token}})
-      response = response.data
-      return response
+      response = response.data.user.favorites;
+      for (story of response) {
+        newFavorites.push(new Story(story));
+      }
+      return newFavorites
     }
 
+  }
+
+  async deleteStory(token, storyId) {
+    const newStories = [];
+    let response = await axios.delete(`${BASE_URL}/stories/${storyId}`, {params: {token}})
+    response = response.data.story;
+
+    return new Story(response);
   }
 }
 
