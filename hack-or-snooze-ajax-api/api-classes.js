@@ -64,7 +64,6 @@ class StoryList {
   }
 }
 
-
 /**
  * The User class to primarily represent the current user.
  *  There are helper methods to signup (create), login, and getLoggedInUser
@@ -180,6 +179,22 @@ class User {
     existingUser.favorites = response.data.user.favorites.map(s => new Story(s));
     existingUser.ownStories = response.data.user.stories.map(s => new Story(s));
     return existingUser;
+  }
+
+  async favoriteStory(token, username, storyId, method='post') {
+    
+    if (method === 'post') {
+      let response = await axios.post(`${BASE_URL}/users/${username}/favorites/${storyId}`, {token})
+      response = response.data
+      return response
+    }
+
+    else {
+      let response = await axios.delete(`${BASE_URL}/users/${username}/favorites/${storyId}`, {params: {token}})
+      response = response.data
+      return response
+    }
+
   }
 }
 

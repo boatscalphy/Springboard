@@ -1,35 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Movie Rank</title>
-    <link rel="stylesheet" href="movies.css">
-</head>
-<body>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Movie Rank</title>
+        <link rel="stylesheet" href="movies.css">
+    </head>
+    <body>
 
-    <h1>Movie Rank</h1>
+        <h1>Movie Rank</h1>
 
-    <form>
-        <input id='movie-title' type='text' name='title' placeholder='Movie Title' minlength=2>
-        <input id='movie-rank' type="number" name="rank" min=0 max=10 placeholder=5>
-        <button>Submit</button>
-    </form>
+        <form>
+            <input id='movie-title' type='text' name='title' placeholder='Movie Title' minlength=2>
+            <input id='movie-rank' type="number" name="rank" min=0 max=10 placeholder=5>
+            <button>Submit</button>
+        </form>
 
-    <div id='movie-list'>
-        <table id='movie-table'>
-            <thead>
-                <tr>
-                    <th id='title'>Movie Title</th>
-                    <th id='rank'>Rating</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-    </div> 
+        <div id='movie-list'>
+            <table id='movie-table'>
+                <thead>
+                    <tr>
+                        <th id='title'>Movie Title</th>
+                        <th id='rank'>Rating</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div> 
 
-    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
-    <script src='movies.js'></script>
+        <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+        <script src='movies.js'></script>
 
-</body>
+    </body>
 </html>

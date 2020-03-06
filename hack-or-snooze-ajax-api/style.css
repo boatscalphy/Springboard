@@ -159,6 +159,10 @@ form > hr {
   cursor: pointer;
 }
 
+.favorited {
+  color:gold;
+}
+
 .trash-can:hover {
   color: crimson;
 }

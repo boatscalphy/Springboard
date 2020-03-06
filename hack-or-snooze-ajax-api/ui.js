@@ -3,16 +3,20 @@ $(async function() {
   const $allStoriesList = $("#all-articles-list");
   const $submitForm = $("#submit-form");
   const $filteredArticles = $("#filtered-articles");
+  const $favoriteArticles = $('#favorited-articles');
   const $loginForm = $("#login-form");
   const $createAccountForm = $("#create-account-form");
   const $ownStories = $("#my-articles");
   const $navLogin = $("#nav-login");
   const $navLogOut = $("#nav-logout");
   const $navPost = $("#nav-post");
+  const $navFavorites = $('#nav-favorites');
+  const $navStories = $('#nav-my-stories');
   const $addArticleForm = $('#submit-form');
   const $editArticleForm = $('#edit-article-form');
   const $userNav = $('#user-nav');
   const $userLogout = $('#user-logout');
+  const $article = $('article');
 
   // global storyList variable
   let storyList = null;
@@ -67,15 +71,20 @@ $(async function() {
       url: $('#url').val()
     }
     const newStory = await storyList.addStory(currentUser, fields);
+    //  Add new story to list of stories
     storyList.stories.push(newStory);
+    //  Add new story to all stories section of the DOM
     let storyHTML = generateStoryHTML(newStory);
-    $allStoriesList.append(storyHTML);
+    $allStoriesList.prepend(storyHTML);
+    //  Add new story to user's list of stories
+    currentUser.ownStories.push(newStory);
+    //  Reset input fields
     $submitForm.trigger('reset');
   });
 
   /**
    * Event listener for signing up.
-   *  If successfully we will setup a new user instance
+   * If successfully we will setup a new user instance
    */
 
   $createAccountForm.on("submit", async function(evt) {
@@ -132,6 +141,55 @@ $(async function() {
   });
 
   /**
+   * Event handler for navigation to favorites
+   */
+
+  $navFavorites.on('click', function() {
+    hideElements();
+    $allStoriesList.hide();
+    $favoriteArticles.show();
+  })
+
+  /**
+   * Event handler for navigation to user's stories
+   */
+
+  $navStories.on('click', async function() {
+    hideElements(); 
+    $allStoriesList.hide();
+    $ownStories.show();
+   })
+
+  /**
+    * Event handler for (un)favoriting articles
+  */
+  
+  $article.on('click', async function(evt) {
+    const evtClass = evt.target.classList
+    const parent = evt.target.parentNode
+    const storyId = parent.parentNode.dataset.storyId;
+
+    if (([...evtClass].includes('fas') || [...evtClass].includes('far')) && [...evtClass].includes('fa-star')) {
+      evtClass.toggle('fas');
+      evtClass.toggle('far');
+      if ([...parent.classList].includes('favorited')) {
+        const newFavorites = await currentUser.favoriteStory(currentUser.loginToken, currentUser.username, storyId, 'delete')
+        currentUser.favorites = newFavorites.user.favorites
+        $(`li[data-story-id="${storyId}"]`).remove()
+      }
+      else {
+        const newFavorites = await currentUser.favoriteStory(currentUser.loginToken, currentUser.username, storyId, 'post')
+        console.log(newFavorites);
+        currentUser.favorites = newFavorites.user.favorites
+      }
+      
+      parent.classList.toggle('favorited');
+    }
+
+    generateFavoriteStory()
+  })
+
+  /**
    * On page load, checks local storage to see if the user is already logged in.
    * Renders page information accordingly.
    */
@@ -142,14 +200,15 @@ $(async function() {
     const username = localStorage.getItem("username");
 
     // if there is a token in localStorage, call User.getLoggedInUser
-    //  to get an instance of User with the right details
-    //  this is designed to run once, on page load
+    // to get an instance of User with the right details
+    // this is designed to run once, on page load
     currentUser = await User.getLoggedInUser(token, username);
     await generateStories();
 
     if (currentUser) {
       showNavForLoggedInUser();
       updateProfileInfo();
+      generateFavoriteStory()
     }
   }
 
@@ -171,6 +230,8 @@ $(async function() {
 
     // update the navigation bar
     showNavForLoggedInUser();
+    generateStories();
+    generateFavoriteStory()
   }
 
   /**
@@ -199,20 +260,56 @@ $(async function() {
 
   function generateStoryHTML(story) {
     let hostName = getHostName(story.url);
+    //  Check if user is logged in
+    //  If user is logged in check add functionality for favoriting article
+    if (currentUser) {
+      const favoriteStories = currentUser.favorites.map(story => {return story.storyId})
+      if (favoriteStories.includes(story.storyId)){
+        const storyMarkup = $(`
+        <li data-story-id="${story.storyId}">
+          <a class="star favorited"><i class="fas fa-star"></i></a>
+          <a class="article-link" href="${story.url}" target="a_blank">
+            <strong>${story.title}</strong>
+          </a>
+          <small class="article-author">by ${story.author}</small>
+          <small class="article-hostname ${hostName}">(${hostName})</small>
+          <small class="article-username">posted by ${story.username}</small>
+        </li>
+      `);
+        return storyMarkup
+      }
+      else {
+        const storyMarkup = $(`
+        <li data-story-id="${story.storyId}">
+          <a class="star"><i class="far fa-star"></i></a>
+          <a class="article-link" href="${story.url}" target="a_blank">
+            <strong>${story.title}</strong>
+          </a>
+          <small class="article-author">by ${story.author}</small>
+          <small class="article-hostname ${hostName}">(${hostName})</small>
+          <small class="article-username">posted by ${story.username}</small>
+        </li>
+      `);
+        return storyMarkup
+      }
+    }
 
-    // render story markup
-    const storyMarkup = $(`
-      <li id="${story.storyId}">
-        <a class="article-link" href="${story.url}" target="a_blank">
-          <strong>${story.title}</strong>
-        </a>
-        <small class="article-author">by ${story.author}</small>
-        <small class="article-hostname ${hostName}">(${hostName})</small>
-        <small class="article-username">posted by ${story.username}</small>
-      </li>
-    `);
+    // render DOM without favorite button for users who aren't logged in.
+    else {
+      //  render story markup
+      const storyMarkup = $(`
+        <li data-story-id="${story.storyId}">
+          <a class="article-link" href="${story.url}" target="a_blank">
+            <strong>${story.title}</strong>
+          </a>
+          <small class="article-author">by ${story.author}</small>
+          <small class="article-hostname ${hostName}">(${hostName})</small>
+          <small class="article-username">posted by ${story.username}</small>
+        </li>
+      `);
+      return storyMarkup;
+    }
 
-    return storyMarkup;
   }
 
   /* hide all elements in elementsArr */
@@ -226,7 +323,8 @@ $(async function() {
       $loginForm,
       $createAccountForm,
       $addArticleForm,
-      $editArticleForm
+      $editArticleForm,
+      $favoriteArticles,
     ];
     elementsArr.forEach($elem => $elem.hide());
   }
@@ -267,5 +365,23 @@ $(async function() {
     $("#profile-username").html(`Username: ${currentUser.username}`)
     $("#profile-account-date").html(`Member Since: ${currentUser.createdAt}`)
   }
-  
+
+  //  Generate user's list of favorite stories
+  function generateFavoriteStory() {
+
+    if (currentUser && currentUser.favorites.length > 0) {
+      //array of user's favorite stories
+      $favoriteArticles.empty();
+      if ($('#favorited-articles > li').length === 0) {
+        $favoriteArticles.append($(`<p>No favorites added!</p>`));
+      }
+      const userFavorites = currentUser.favorites;
+      for (story of userFavorites) {
+        console.log(story);
+        const result = generateStoryHTML(story)
+        $favoriteArticles.append(result)
+      }
+    }
+  }
+  console.dir(currentUser);
 });
