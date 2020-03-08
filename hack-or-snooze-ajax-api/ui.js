@@ -231,8 +231,6 @@ $(async function() {
     const newName = $('#edit-account-name').val();
     const newPassword = $('#edit-account-password').val();
     const confirmPassword = $('#edit-account-password-confirmation').val();
-    console.log(newPassword);
-    console.log(newName);
     if (newPassword !== confirmPassword){
       alert('Password fields do not match');
     }
