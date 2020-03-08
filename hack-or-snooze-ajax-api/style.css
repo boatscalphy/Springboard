@@ -221,6 +221,19 @@ form > hr {
   margin: 10px 0;
 }
 
+#user-profile-edit {
+  color: blue;
+  cursor: pointer;
+}
+
+.user-edit label {
+  width: 5rem;
+}
+
+.edit-user-form > button {
+  margin: 5px 0px 15px 90px;
+}
+
 
 /** responsive queries for tightening things up for mobile. */
 

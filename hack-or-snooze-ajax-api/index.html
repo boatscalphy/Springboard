@@ -116,6 +116,25 @@
       <div id="profile-name">Name:</div>
       <div id="profile-username">Username:</div>
       <div id="profile-account-date">Account Created:</div>
+      <a id="user-profile-edit">Edit Profile</a>
+      <div id="user-edit-form" class="user-form hidden">
+        <form action="#" id="edit-user" class="edit-user-form" method="POST">
+          <div class="user-edit">
+            <label for="edit-account-name">new name</label>
+            <input required id="edit-account-name" type="text">
+          </div>
+          <div class="user-edit">
+            <label for="edit-account-password">new p/w</label>
+            <input id="edit-account-password" type="password">
+          </div>
+          <div class="user-edit">
+            <label for="edit-account-password-confirmation">new p/w</label>
+            <input id="edit-account-password-confirmation" type="password">
+          </div>
+          <button type="submit">Update</button>
+          <hr>
+        </form>
+      </div>
     </section>
   </section>
 </body>

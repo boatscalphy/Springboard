@@ -186,7 +186,7 @@ class User {
     if (method === 'post') {
       let response = await axios.post(`${BASE_URL}/users/${username}/favorites/${storyId}`, {token})
       response = response.data.user.favorites;
-      for (story of response) {
+      for (let story of response) {
         newFavorites.push(new Story(story));
       }
       return newFavorites
@@ -195,7 +195,7 @@ class User {
     else {
       let response = await axios.delete(`${BASE_URL}/users/${username}/favorites/${storyId}`, {params: {token}})
       response = response.data.user.favorites;
-      for (story of response) {
+      for (let story of response) {
         newFavorites.push(new Story(story));
       }
       return newFavorites
@@ -204,11 +204,51 @@ class User {
   }
 
   async deleteStory(token, storyId) {
-    const newStories = [];
     let response = await axios.delete(`${BASE_URL}/stories/${storyId}`, {params: {token}})
     response = response.data.story;
 
     return new Story(response);
+  }
+
+  async updateUser(username, name, token, password=null) {
+    
+    if (password) {
+      try {
+        let response = await axios({
+          method:'patch',
+          url: `${BASE_URL}/users/${username}`,
+          data: {
+            token, 
+            user: {
+              name,
+              password
+            }
+          }
+        })
+      }
+      catch (e) {
+        console.log(e);
+      }
+    }
+
+    else {
+      try {
+        let response = await axios({
+          method:'patch',
+          url: `${BASE_URL}/users/${username}`,
+          data: {
+            token, 
+            user: {
+              name,
+            }
+          }
+        })
+
+      }
+      catch (e) {
+        console.dir(e);
+      }
+    }
   }
 }
 

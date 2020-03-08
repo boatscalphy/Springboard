@@ -18,6 +18,8 @@ $(async function() {
   const $userLogout = $('#user-logout');
   const $article = $('article');
   const $userProfile = $('#user-profile');
+  const $userProfileEdit = $('#user-profile-edit');
+  const $userEditForm = $('#user-edit-form');
 
   // global storyList variable
   let storyList = null;
@@ -213,6 +215,41 @@ $(async function() {
     $userProfile.show();
   })
 
+  /**
+   *  Eventlistener to open up form to edit user profile settings
+   */
+
+  $userProfileEdit.on('click', function(evt) {
+    $userEditForm.slideToggle();
+  })
+
+  /** 
+   *  Eventlistener to edit user's name and password
+   */
+  $userEditForm.on('submit', async function(evt) {
+    evt.preventDefault();
+    const newName = $('#edit-account-name').val();
+    const newPassword = $('#edit-account-password').val();
+    const confirmPassword = $('#edit-account-password-confirmation').val();
+    console.log(newPassword);
+    console.log(newName);
+    if (newPassword !== confirmPassword){
+      alert('Password fields do not match');
+    }
+
+    else if (newPassword && (newPassword === confirmPassword)) {
+      await currentUser.updateUser(currentUser.username, newName, currentUser.loginToken, newPassword);
+      alert('Account Updated!');
+    }
+
+    else {
+      await currentUser.updateUser(currentUser.username, newName, currentUser.loginToken)
+      alert('Account Updated!');
+    }
+    currentUser.name = newName;
+    updateProfileInfo()
+    $('#edit-user').trigger('reset');
+  })
   /**
    * On page load, checks local storage to see if the user is already logged in.
    * Renders page information accordingly.
