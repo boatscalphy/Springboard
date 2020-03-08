@@ -68,6 +68,9 @@ $(async function() {
    */
 
   $addArticleForm.on('submit', async function(evt) {
+
+    evt.preventDefault();
+    
     const fields = {
       author: $('#author').val(),
       title: $('#title').val(),
