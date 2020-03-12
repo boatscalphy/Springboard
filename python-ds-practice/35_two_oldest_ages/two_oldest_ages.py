@@ -21,3 +21,28 @@ def two_oldest_ages(ages):
     # you may find it helpful to research the `sorted(iter)` function, which
     # can take *any* type of list-like-thing, and returns a new, sorted list
     # from it.
+
+    def check_oldest(lst, value):
+        if lst[1] == None:
+            lst[1] = value
+
+        elif lst[1] < value:
+            lst[0] = lst[1]
+            lst[1] = value
+
+        elif lst[0] == None:
+            lst[0] = value
+
+        elif lst[1] == value:
+            pass
+
+        elif lst[0] < value:
+            lst[0] = value
+
+        return lst
+    oldest = [None, None]
+
+    for age in ages:
+        oldest = check_oldest(oldest, age)
+
+    return tuple(oldest)
