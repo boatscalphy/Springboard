@@ -11,3 +11,20 @@ def mode(nums):
         >>> mode([2, 2, 3, 3, 2])
         2
     """
+
+    mode = None
+    dct = {}
+
+    for val in nums:
+        if val in dct:
+            dct[val] += 1
+        else:
+            dct[val] = 1
+    
+    for key in dct.keys():
+        if mode == None:
+            mode = key
+        elif dct[key] > dct[mode]:
+            mode = key
+
+    return mode

@@ -16,3 +16,9 @@ def friend_date(a, b):
         >>> friend_date(sauron, gandalf)
         True
     """
+
+    if len(set(a[2]) & set(b[2])) > 0:
+        return True
+
+    else:
+        return False
