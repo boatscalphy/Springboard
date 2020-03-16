@@ -13,3 +13,12 @@ def find_the_duplicate(nums):
         >>> find_the_duplicate([2, 1, 3, 4]) is None
         True
     """
+
+    data = {}
+    for val in nums:
+        if val in data:
+            return val
+        else:
+            data[val] = True
+        
+    return None
