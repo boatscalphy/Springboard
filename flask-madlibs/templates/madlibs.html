@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Madlibs!</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <h1>Madlibs!</h1>
+    <form action="/story" method="GET">
+        {%for lib in lst%}
+            <div class="form-field">
+                <label type="text" name="{{lib}}">{{lib}}:</label>
+                <input type="text" id="{{lib}}" name="{{lib}}">
+            </div>
+        {%endfor%}
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>
