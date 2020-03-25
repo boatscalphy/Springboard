@@ -20,7 +20,7 @@
 async function searchShows(query) {
   // TODO: Make an ajax request to the searchShows api.
   let shows = [];
-  let response = await axios.get(`http://api.tvmaze.com/search/shows?q=${query}`);
+  let response = await axios.get(`https://api.tvmaze.com/search/shows?q=${query}`);
   response = response.data
   try {
     for (entry of response) {
