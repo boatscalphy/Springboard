@@ -102,9 +102,9 @@ $("#shows-list").on("click", async function searchEpisodes(evt) {
 async function getEpisodes(id) {
   // TODO: get episodes from tvmaze
   //       you can get this by making GET request to
-  //       http://api.tvmaze.com/shows/SHOW-ID-HERE/episodes
+  //       https://api.tvmaze.com/shows/SHOW-ID-HERE/episodes
   episodes = [];
-  let response = await axios.get(`http://api.tvmaze.com/shows/${id}/episodes`)
+  let response = await axios.get(`https://api.tvmaze.com/shows/${id}/episodes`)
   response = response.data;
   try {
     for (episode of response) {
