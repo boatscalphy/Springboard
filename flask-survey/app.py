@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, redirect, flash
+from flask import Flask, request, render_template, redirect, flash, session
 from flask_debugtoolbar import DebugToolbarExtension
 from random import choice
 from surveys import *
@@ -9,8 +9,6 @@ app.debug = False
 app.config['SECRET_KEY'] = 'password1'
 
 toolbar = DebugToolbarExtension(app)
-response = []
-question_num = 0
 survey = surveys['satisfaction']
 
 @app.route('/')
@@ -20,25 +18,34 @@ def main():
 @app.route('/questions/<int:id>', methods=['GET', 'POST'])
 def questionaire(id):
 
-    if id > len(response):
+    if 'response' not in session:
+        return redirect('/')
+
+    if id > len(session['response']):
         flash('Please answer the question below to proceed:')
-        return redirect(f'/questions/{len(response)}')
+        question = len(session['response'])
+        return redirect(f'/questions/{question}')
 
     if id < len(survey.questions):
         question = survey.questions[id].question
         choices = survey.questions[id].choices
-        print(len(response))
         return render_template('questions.html', question = question, choices = choices, id=id)
     else:
-        print(response)
         return render_template('complete.html')
     
 @app.route('/answer/<int:id>', methods=['POST'])
 def answer(id):
 
-    if id == len(response):
-        response.append(request.form.get('choice'))
+    if id == len(session['response']):
+        session['response'].append(request.form.get('choice'))
+        session.modified = True
     else:
-        response[id] = request.form.get('choice')
+        session['response'][id] = request.form.get('choice')
+        session.modified = True
 
     return redirect(f'/questions/{id+1}')
+
+@app.route('/start', methods=['POST'])
+def start_survey():
+    session['response'] = []
+    return redirect('/questions/0')
