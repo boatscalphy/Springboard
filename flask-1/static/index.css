@@ -1,0 +1,27 @@
+form {
+
+    margin-top: 20px;
+
+}
+
+.form-entry {
+
+    margin-bottom: 20px;
+
+}
+
+option, input, select, label {
+
+    font-size: 20px;
+
+}
+
+input {
+
+    width:6em;
+
+}
+
+
+
+

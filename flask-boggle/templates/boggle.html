@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}Play Boggle!{% endblock %}
+
+{% block link %}
+<link rel="stylesheet" href= "/static/boggle.css"}>
+{% endblock %}
+
+{% block content %}
+    <div>
+
+        <div id="timer">
+            <p>Time Remaining: <span id="time">60</span></p>
+            <p>Games Played: {{session['visits']}}</p>
+            <p>Score: <span id="player-score">0</span></p>
+        </div>
+
+        <table>
+            {% for i in range(session['board']|length) %}
+                <tr>
+                    {% for char in session['board'][i] %}
+                        <td>{{char.upper()}}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+        
+        <div id="enter-word">
+            <form action="/submit_word" method="post" id="boggle-form">
+                <input type="text" name="word">
+                <button>Enter</button>
+            </form>
+        </div>
+
+        <div id="resets">
+            <form action="/play_boggle" method="GET">
+                <button class="reset-btn reset">Reset</button>
+            </form>
+            <form action="/play_boggle" method="POST">
+                <button class="reset-btn new-game">New Game</button>
+            </form>
+        </div>
+
+
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src={{ url_for('static', filename= "app.js") }}></script>
+
+{% endblock %}

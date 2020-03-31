@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}Welcome to Boggle!{% endblock %}
+
+{% block content %}
+    <div>
+        <h1>Let's play the Boggle Game!</h1>
+        <h3>Boggle Instructions</h3>
+        <ul>
+            <li>A 5x5 grid of letters will be displayed on the board</li>
+                <ul>
+                    <li>Users will create words from the randomly assorted letters</li>
+                    <li>The longer the word the more points the user will receive</li>
+                    <li>Words can be created by joining the letters in any direction</li>
+                        <ul>
+                            <li>Horizontally</li>
+                            <li>Vertically</li>
+                            <li>Diagonally</li>
+                        </ul>
+                </ul>
+            <li>You will have 60 seconds to play the game</li>
+        </ul>
+        <div>
+            <form action="/play_boggle" method="post">
+                <button type="submit">Start Game</button>
+            </form>
+        </div>
+
+    </div>    
+{% endblock %}

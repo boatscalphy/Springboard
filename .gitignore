@@ -4,3 +4,5 @@ jeopardy/
 flask-greet-calc/venv
 venv/
 */__pycache__
+*/.vscode
+*/venv

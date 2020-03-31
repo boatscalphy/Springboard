@@ -1,0 +1,51 @@
+table {
+    margin:1em auto;
+    border-collapse:collapse;
+}
+
+td {
+    padding:1.5rem;
+    border:2px solid black
+}
+
+#timer {
+    text-align:center;
+    font-size:1.5rem;
+}
+
+p {
+    margin:0;
+}
+
+form {
+    display:flex;
+    justify-content:center
+}
+
+input {
+    height:2em;
+    width:20em;
+}
+
+button {
+    height:2.5em;
+}
+
+#resets {
+    display:flex;
+    justify-content:center;
+}
+
+.reset-btn {
+    width: 11.95em;
+    outline:none;
+    border:none
+}
+
+.reset {
+    background-color:goldenrod;
+}
+
+.new-game {
+    background-color:green;
+}

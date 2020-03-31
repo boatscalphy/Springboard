@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}Currency Conversion{% endblock %}
+
+{% block link %}<link rel="stylesheet" href="/static/index.css">{% endblock %}
+
+{% block content %}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div>
+                <ul class="flashes">
+                    {% for message in messages %}
+                        <li class="flash-message">{{message}}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <div>
+        <form action="/forex" method="GET">
+            <div class="form-entry">
+                <label for="from">Convert from:</label>
+                <select id="from" name="from">
+                    {% for abr in ABR %}
+                        {% if abr == "USD" %}
+                            <option value="{{abr}}" selected>{{abr}}</option>
+                        {% endif %}
+                        <option value="{{abr}}">{{abr}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-entry">
+                <label for="to">Convert to:</label>
+                <select id="to" name="to">
+                    {% for abr in ABR %}
+                        <option value="{{abr}}">{{abr}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-entry">
+                <label id="amount">Amount:</label>
+                <input id ="amount" type="text" name="amount">
+            </div>
+            <div class="form-entry">
+                <button type="submit">Convert!</button>
+            </div>
+        </form>
+    </div> 
+{% endblock %}
