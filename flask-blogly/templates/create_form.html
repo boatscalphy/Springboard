@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Create User{% endblock %}
+{% block content %}
+    <div class="container ml-0">
+            <form action="/create_user" method="POST">
+                <div class="form-group col-5">
+                    <label for="first_name">First Name</label>
+                    <input type="text" class="form-control" name="first_name" placeholder="Enter first name" required>
+                </div>
+                    <div class="form-group col-5">
+                    <label for="last_name">Last Name</label>
+                    <input type="text" class="form-control" name="last_name" placeholder="Enter last name" required>
+                </div>
+                <div class="form-group col-5">
+                    <label for="img_url">Image URL</label>
+                    <input type="text" class="form-control" name="img_url" placeholder="Image URL">
+                </div>
+                <button type="submit" class="btn btn-primary ml-3">Submit</button>
+          </form>
+    </div>
+{% endblock %}

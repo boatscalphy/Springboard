@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}Welcome!{% endblock %}
+{% block content %}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>{{message}}</strong>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            {% endfor %}
+        {% endif %}
+
+    {% endwith %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-2">
+                <div class="card mt-3 ml-3" style="width: 18rem;">
+                    <img class="card-img-top" src="{{user.image_url}}" alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title">{{user.first_name}} {{user.last_name}}</h5>
+                        <p class="card-text">Hello my name is {{user.first_name}}.</p>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Edit</button>
+                        <button type="submit" class="btn btn-danger" form="delete-user" formmethod="POST">Delete</button>
+                        <a type="button" class="btn btn-primary" href="/user/id/{{user.id}}/posts/new">Add Post</a>
+                        <form action="/user/delete/{{user.id}}" method="POST" id="delete-user"></form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm mt-3">
+                        <div>
+                            <h4>Posts</h4>
+                            <ul>
+                                {% for post in posts %}
+                                    <li><a href="/posts/{{post.id}}">{{post.title}}</a> <small>{{post.created_at|datetimeformat('%b %d, %Y %H:%M')}} UTC</small></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+            
+
+      
+      <!-- Modal -->
+      <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <form action="/user/id/{{user.id}}" method="POST">
+                <div class="modal-body">
+                  <!-- Form Content-->
+                        <div class="form-group col-5">
+                            <label for="first_name">First Name</label>
+                            <input type="text" class="form-control" name="first_name" placeholder="Enter first name">
+                        </div>
+                            <div class="form-group col-5">
+                            <label for="last_name">Last Name</label>
+                            <input type="text" class="form-control" name="last_name" placeholder="Enter last name">
+                        </div>
+                        <div class="form-group col-5">
+                            <label for="img_url">Image URL</label>
+                            <input type="text" class="form-control" name="img_url" placeholder="Image URL">
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                          <button type="submit" class="btn btn-primary">Save changes</button>
+                        </div>
+                  <!-- Form End-->
+                </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+{% endblock %}
