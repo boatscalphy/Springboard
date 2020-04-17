@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% set active_page = "tags" %}
+{% block title %}Tags{% endblock %}
+{% block content %}
+
+    <div class="container">
+        <h1>Tags</h1>
+        <a class="btn btn-success" href="/tags/new">Add Tags</a>
+        
+
+        {% if tags|length > 0 %}
+        <ul class="list-group list-group-flush mt-4">
+            {% for tag in tags %}
+                <li class="list-group-item"><a href="/tags/{{tag.id}}">{{tag.name}}</a></li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        
+    </div>
+
+{% endblock %}

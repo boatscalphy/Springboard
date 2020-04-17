@@ -66,3 +66,41 @@ class Post(db.Model):
         db.ForeignKey('users.id'),
         nullable = False
     )
+
+    assignment = db.relationship('PostTag', backref='post', cascade='all, delete-orphan')
+    tags = db.relationship('Tag', secondary="posttags", backref="posts")
+
+class Tag(db.Model):
+
+    __tablename__ = "tags"
+
+    id = db.Column(
+        db.Integer,
+        primary_key = True,
+        autoincrement = True
+    )
+
+    name = db.Column(
+        db.Text,
+        nullable = False,
+        unique = True
+    )
+
+    assignment = db.relationship('PostTag', backref='tags', cascade='all, delete-orphan')
+
+class PostTag(db.Model):
+    
+    __tablename__ = "posttags"
+
+    post_id = db.Column(
+        db.Integer,
+        db.ForeignKey('posts.id'),
+        primary_key = True,
+        nullable = False
+    )
+
+    tag_id = db.Column(
+        db.Integer,
+        db.ForeignKey('tags.id'),
+        primary_key = True
+    )

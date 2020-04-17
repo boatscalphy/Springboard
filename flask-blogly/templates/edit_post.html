@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 
-{% block title %}New Post{% endblock %}
+{% block title %}Edit Post{% endblock %}
 {% block content %}
     <div class="container mt-3">
         <h1>Edit post for {{post.user.first_name}} {{post.user.last_name}}</h1>
-        <form action="/posts/{{post.id}}/edit" method="POST">
+        <form action="/posts/{{post.id}}/edit" method="POST" id="post_edit">
             <div class="form-group">
               <label for="title"><strong>Title</strong></label>
               <input type="text" class="form-control" name="title" placeholder="Title" maxlength="50" value="{{post.title}}">
@@ -13,7 +13,17 @@
               <label for="post-content"><strong>Content</strong></label>
               <textarea class="form-control" name="post-content" rows="3">{{post.post_content}}</textarea>
             </div>
-            <button type="submit" class="btn btn-primary float-right">Edit</button>
+            {% if tags|length > 0 %}
+              <p><strong>Tags</strong></p>
+              {% for tag in tags %}
+              <div class="form-check form-check-inline">
+                <input type="checkbox" class="form-check-input" name="tags" value="{{tag.name}}">
+                <label class="form-check-label" for="tags"><strong>{{tag.name}}</strong></label>
+              </div>
+              {% endfor %}
+            {% endif %}
           </form>
+          <button type="submit" class="btn btn-primary float-right mt-2">Edit</button>
+          <a href="/posts/{{post.id}}" class="btn btn-outline-primary float-right mt-2 mr-2" formmethod="POST" form="post_edit">Back</a>
     </div>
 {% endblock %}

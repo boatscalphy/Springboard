@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% set active_page = "tags" %}
+{% block title %}{{tag_name}}{% endblock %}
+{% block content %}
+
+    <div class="mt-2 ml-3">
+
+        <h1>{{tag_name}}</h1>
+
+        {% if posts|length > 0 %}
+            <ul>
+                {% for post in posts %}
+                    <li><a href="posts/{{post.post.id}}">{{post.post.title}}</a></li>
+                {% endfor %} 
+            </ul>   
+        {% endif %}
+        <a class="btn btn-primary" href="/tags">Back</a>
+        <a class="btn btn-success" href="/tags/new">Add Tags</a>
+    </div>
+
+{% endblock %}

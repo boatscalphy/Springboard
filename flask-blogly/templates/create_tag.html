@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% set active_page = "tags" %}
+{% block title %}Create User{% endblock %}
+{% block content %}
+    <div class="container ml-0">
+        <h3 class="my-3">Create Tag</h3>
+            <form action="/tags/new" method="POST">
+                <div class="form-group col-5">
+                    <input type="text" class="form-control" name="tag_name" placeholder="Enter tag name" required>
+                </div>
+                <a href="/tags" class="btn btn-outline-primary ml-3">Back</a>
+                <button type="submit" class="btn btn-primary ml-3">Submit</button>
+          </form>
+    </div>
+{% endblock %}

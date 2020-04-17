@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% set active_page = "posts" %}
+{% block title %}Posts{% endblock %}
+{% block content %}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>{{message}}</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    <div class="container mt-3">
+        <h1>Posts</h1>
+        {% for post in posts %}
+            <p class="h5 m-0"><a href="/posts/{{post.id}}" class="text-dark">{{post.title}}</a></p>
+            <small>By: <a href="/user/id/{{post.user.id}}">{{post.user.first_name}} {{post.user.last_name}}</a> <small class="text-secondary">on {{post.created_at|datetimeformat('%b %d, %Y %H:%M')}} UTC</small></small></small>
+            <p>{{post.post_content}}</p>
+        {% endfor %}
+    </div>
+{% endblock %}

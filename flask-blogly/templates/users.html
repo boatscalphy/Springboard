@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% set active_page = 'users' %}
+
+{% block title %}Welcome!{% endblock %}
+{% block content %}
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>{{message}}</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    <div class="container-fluid">
+        <h1>Blogly Users</h1>
+        <p>Thank you for stopping by. Please take a look at our users below!</p>
+        <ul>
+        {% for user in users %}
+            <li><a href="/user/id/{{user.id}}">{{user.first_name}} {{user.last_name}}</a></li>    
+        {% endfor %}
+        </ul>
+        <a class="btn btn-secondary" href="/create_user">Create User</a>
+    </div>
+
+{% endblock %}
