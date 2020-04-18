@@ -67,8 +67,8 @@ class Post(db.Model):
         nullable = False
     )
 
-    assignment = db.relationship('PostTag', backref='post', cascade='all, delete-orphan')
     tags = db.relationship('Tag', secondary="posttags", backref="posts")
+    assignment = db.relationship('PostTag', backref="posts")
 
 class Tag(db.Model):
 
@@ -86,7 +86,7 @@ class Tag(db.Model):
         unique = True
     )
 
-    assignment = db.relationship('PostTag', backref='tags', cascade='all, delete-orphan')
+    assignment = db.relationship('PostTag', backref="tags")
 
 class PostTag(db.Model):
     
@@ -96,7 +96,6 @@ class PostTag(db.Model):
         db.Integer,
         db.ForeignKey('posts.id'),
         primary_key = True,
-        nullable = False
     )
 
     tag_id = db.Column(
@@ -104,3 +103,6 @@ class PostTag(db.Model):
         db.ForeignKey('tags.id'),
         primary_key = True
     )
+
+    tag = db.relationship(Tag, backref=db.backref('Tag', cascade="all, delete-orphan"))
+    post = db.relationship(Post, backref=db.backref('Post', cascade="all, delete-orphan"))

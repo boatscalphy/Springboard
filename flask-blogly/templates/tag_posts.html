@@ -10,12 +10,14 @@
         {% if posts|length > 0 %}
             <ul>
                 {% for post in posts %}
-                    <li><a href="posts/{{post.post.id}}">{{post.post.title}}</a></li>
+                    <li><a href="posts/{{post.posts.id}}">{{post.posts.title}}</a></li>
                 {% endfor %} 
             </ul>   
         {% endif %}
         <a class="btn btn-primary" href="/tags">Back</a>
+        <button class="btn btn-danger" form="delete-post" formmethod="POST">Delete Post</button>
         <a class="btn btn-success" href="/tags/new">Add Tags</a>
+        <form action="/tags/{{tag_id}}/delete" method="POST" id="delete-post"></form>
     </div>
 
 {% endblock %}

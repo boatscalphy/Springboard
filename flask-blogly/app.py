@@ -117,7 +117,8 @@ def show_posts():
 @app.route('/posts/<int:post_id>')
 def show_post(post_id):
     post = Post.query.get_or_404(post_id)
-    return render_template('posts.html', post = post)
+    tags = PostTag.query.filter_by(post_id=post_id).all()
+    return render_template('posts.html', post = post, tags=tags)
 
 @app.route('/posts/<int:post_id>/edit', methods=["GET", "POST"])
 def edit_post(post_id):
@@ -166,6 +167,13 @@ def create_tag():
 def show_tag(tag_id):
     tag_name = Tag.query.filter_by(id=tag_id).first()
     posts = PostTag.query.filter_by(tag_id = tag_id).all()
-    return render_template('tag_posts.html', posts=posts, tag_name=tag_name.name)
+    return render_template('tag_posts.html', posts=posts, tag_name=tag_name.name, tag_id=tag_id)
+
+@app.route('/tags/<int:tag_id>/delete', methods=["POST"])
+def delete_tag(tag_id):
+    Tag.query.filter_by(id=tag_id).delete()
+    db.session.commit()
+    return redirect('/tags')
+
 
 

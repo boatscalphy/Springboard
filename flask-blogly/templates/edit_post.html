@@ -23,7 +23,7 @@
               {% endfor %}
             {% endif %}
           </form>
-          <button type="submit" class="btn btn-primary float-right mt-2">Edit</button>
-          <a href="/posts/{{post.id}}" class="btn btn-outline-primary float-right mt-2 mr-2" formmethod="POST" form="post_edit">Back</a>
+          <button type="submit" class="btn btn-primary float-right mt-2" form="post_edit" formmethod="POST">Edit</button>
+          <a href="/posts/{{post.id}}" class="btn btn-outline-primary float-right mt-2 mr-2">Back</a>
     </div>
 {% endblock %}
