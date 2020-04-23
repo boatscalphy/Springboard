@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}Pet Adoption{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h3>Adopt a pet!</h3>
+    {% if pet_list|length > 0 %}
+        <div class="row">
+            {% for pet in pet_list %}
+            <div class="col m4">
+                <div class="card">
+                    <div class="card-image">
+                      <img src="{{pet.photo_url}}">
+                    </div>
+                    <div class="card-content">
+                        <p class="card-title"><strong>{{pet.name}}</strong>
+                            {% if pet.available %}
+                                <span class="new badge green" data-badge-caption="Available"></span>
+                            {% else %}
+                                <span class="new badge red" data-badge-caption="Unavailable"></span>
+                            </p>
+                            {% endif %}
+                    </div>
+                    <!-- <div class="card-action">
+                    {% if pet.available %}
+                        <p class="green-text">Available</p>
+                    {% else %}
+                        <p class="red-text">Unavailable</p>
+                    {% endif %}
+                    </div> -->
+                </div>
+            </div>
+            {% endfor %}
+    {% else %}
+        <h6>There are not pets available for adoption!</h6>
+    {% endif %}
+</div>
+{% endblock %}
+

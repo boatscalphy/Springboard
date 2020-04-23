@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% set active_page = 'add' %}
+{% block title %}Add a pet{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row section">
+        <form class="col s12" method="POST" action="/add">
+            {{form.hidden_tag()}}
+
+            {% for field in form if field.widget.input_type != 'hidden' %}
+                {%for error in field.errors %}
+                    <p class="red-text m-0">{{error}}</p>
+                {% endfor %}
+                {% if field.label.text != 'Notes' %}
+                    <div class="row">
+                        <div class="input-field col s12">
+                            {{field(class_=('validate'))}}
+                            {{field.label}}
+                        </div>
+                    </div>
+                {% else %}
+                    <h1></h1>
+                    <div class="row">
+                        <div class="input-field col s12">
+                        {{field(class_=('materialize-textarea'))}}
+                        {{field.label}}
+                        </div>
+                    </div>
+                {% endif %}
+
+            {% endfor %}
+            <button class="btn waves-effect waves-light right" type="submit" name="action">Submit</button>
+        </form>
+    </div>
+{% endblock %}
+            

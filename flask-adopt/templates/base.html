@@ -3,9 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link rel="stylesheet" href="/static/main.css">
     <title>{% block title %}{% endblock %}</title>
 </head>
 <body>
+    {% set navigation_bar = [
+        ('/', 'index', 'Home'),
+        ('/add', 'add', 'Add Pet')
+    ] -%}
+    
+    {% set active_page = active_page|default('index') -%}
+    <nav>
+        <div class="nav-wrapper">
+          <a href="#" class="right brand-logo">Adopt-a-Pet</a>
+          <a href="#" data-target="mobile-demo" class="sidenav-trigger hide-on-med-and-up"><i class="material-icons">menu</i></a>
+          <ul id="nav-mobile" class="left hide-on-small-only">
+            {% for href, id, caption in navigation_bar %}
+                <li{% if id == active_page %} 
+                        class="active"
+                    {% endif %}
+                >
+                    <a href="{{href|e}}">{{caption|e}}</a>
+                </li>
+            {% endfor %}
+          </ul>
+        </div>
+    </nav>
+
+    <ul class="sidenav" id="mobile-demo">
+        {% for href, id, caption in navigation_bar %}
+                <li{% if id == active_page %} 
+                        class="active"
+                    {% endif %}
+                >
+                    <a href="{{href|e}}">{{caption|e}}</a>
+                </li>
+        {% endfor %}
+    </ul>
+
     {% block content %}{% endblock %}
+    <script src="https://code.jquery.com/jquery-3.5.0.min.js" integrity="sha256-xNzN2a4ltkB44Mc/Jz3pT4iU1cmeR0FkXs4pru/JxaQ=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src='/static/main.js'></script>
 </body>
 </html>
