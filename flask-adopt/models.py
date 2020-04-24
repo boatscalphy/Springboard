@@ -32,7 +32,7 @@ class Pet(db.Model):
 
     @classmethod
     def get_pets(cls):
-        return db.session.query(cls).all()
+        return db.session.query(cls).order_by(cls.name).all()
     
     @classmethod
     def add_pet(cls, name, age, species, notes, photo_url=None):

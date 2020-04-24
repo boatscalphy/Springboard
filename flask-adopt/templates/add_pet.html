@@ -12,19 +12,25 @@
                 {%for error in field.errors %}
                     <p class="red-text m-0">{{error}}</p>
                 {% endfor %}
-                {% if field.label.text != 'Notes' %}
+                {% if field.type == 'SelectField' %}
                     <div class="row">
                         <div class="input-field col s12">
-                            {{field(class_=('validate'))}}
+                            {{field}}
                             {{field.label}}
                         </div>
                     </div>
-                {% else %}
-                    <h1></h1>
+                {% elif field.type =='TextAreaField' %}
                     <div class="row">
                         <div class="input-field col s12">
                         {{field(class_=('materialize-textarea'))}}
                         {{field.label}}
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="row">
+                        <div class="input-field col s12">
+                            {{field(class_=('validate'))}}
+                            {{field.label}}
                         </div>
                     </div>
                 {% endif %}

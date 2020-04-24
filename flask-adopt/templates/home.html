@@ -14,13 +14,13 @@
                       <img src="{{pet.photo_url}}">
                     </div>
                     <div class="card-content">
-                        <p class="card-title"><strong>{{pet.name}}</strong>
+                        <a class="card-title black-text" href="/{{pet.id}}"><strong>{{pet.name}}</strong>
                             {% if pet.available %}
                                 <span class="new badge green" data-badge-caption="Available"></span>
                             {% else %}
                                 <span class="new badge red" data-badge-caption="Unavailable"></span>
-                            </p>
                             {% endif %}
+                        </a>
                     </div>
                     <!-- <div class="card-action">
                     {% if pet.available %}

@@ -15,6 +15,7 @@
     ] -%}
     
     {% set active_page = active_page|default('index') -%}
+
     <nav>
         <div class="nav-wrapper">
           <a href="#" class="right brand-logo">Adopt-a-Pet</a>
@@ -42,6 +43,14 @@
                 </li>
         {% endfor %}
     </ul>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <p class="green lighten-4 center">{{message}}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
 
     {% block content %}{% endblock %}
     <script src="https://code.jquery.com/jquery-3.5.0.min.js" integrity="sha256-xNzN2a4ltkB44Mc/Jz3pT4iU1cmeR0FkXs4pru/JxaQ=" crossorigin="anonymous"></script>

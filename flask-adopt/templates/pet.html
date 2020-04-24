@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% set active_page = None %}
+{% block title %}Pet: {{pet.name}}{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col s4">
+            <div class="card">
+                <div class="card-image">
+                <img src="{{pet.photo_url}}">
+            </div>
+            <div class="card-content">
+                <span class="card-title">{{pet.name}} {% if pet.age %}({{pet.age}}){% endif %}</span>
+                <p>{{pet.notes}}</p>
+            </div>
+            <div class="card-action">
+                <span><a class="waves-effect waves-light btn modal-trigger" href="#edit_pet"><i class="material-icons white-text">edit</i></a></span>
+                <span><button class="btn red lighten-2" form="delete_pet" formmethod="POST"><i class="material-icons white-text">delete</i></button></span>
+                <form id="delete_pet" action="/{{pet.id}}/delete" method="POST"></form>
+            </div>
+        </div>
+    </div>
+
+  <!-- Modal Structure -->
+  <div id="edit_pet" class="modal">
+    <div class="modal-content">
+        <form class="col s12" method="POST" action="/{{pet.id}}">
+            {{form.hidden_tag()}}
+            {% for field in form if field.widget.input_type != 'hidden' %}
+                {% if field.type == 'TextAreaField' %}
+                <div class="row">
+                    <div class="input-field col s12">
+                    {{field(class_=('materialize-textarea'))}}
+                    {{field.label}}
+                    </div>
+                </div>
+                {% elif field.type == 'BooleanField' %}
+                <div class="row">
+                    <div class="col s12">
+                        <label>
+                            {{field}}
+                            <span>Available</span>
+                        </label>
+                    </div>
+                </div>
+                {% else %}
+                <div class="row">
+                    <div class="input-field col s12">
+                        {{field(class_=('validate'))}}
+                        {{field.label}}
+                    </div>
+                </div>
+                {% endif %}
+            {% endfor %}
+            <div class="right" style="margin-bottom: 1em;">
+                <a class="modal-close waves-effect waves-green btn red lighten-2" href="#!">Back</a>
+                <button class="btn">Edit</button>
+            </div>
+
+      </form>
+    </div>
+{% endblock %}
