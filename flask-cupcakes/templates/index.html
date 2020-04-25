@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/styles.css">
+    <title>Cupcakes</title>
+</head>
+<body>
+    <div>
+        <h1>Cupcakes</h1>
+        <div id="cupcakes">
+            <div id="cupcake_container"></div>
+        </div>
+        <div>
+            <form id="cupcake_form" action="/api/cupcakes" method="POST">
+                <div>
+                    <label name="flavor">Flavor</label>
+                    <input type="text" placeholder="Enter a flavor" name="flavor" required>
+                </div>
+                <div>
+                    <label name="size">Size</label>
+                    <select name="size">
+                        <option value="Small">Small</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Large">Large</option>
+                    </select>
+                </div>
+                <div>
+                    <label name="rating">Rating</label>
+                    <input type="number" name="rating" placeholder="Enter rating" min=0 max=10 required>
+                </div>
+                <div>
+                    <label name="image">Image URL</label>
+                    <input name="image" placeholder="Enter image URL" required>
+                </div>
+                <button type="submit" id="create_cupcake">Submit</button>
+        </form>
+        </div>
+    </div>
+    
+    <script src="https://code.jquery.com/jquery-3.5.0.min.js" integrity="sha256-xNzN2a4ltkB44Mc/Jz3pT4iU1cmeR0FkXs4pru/JxaQ=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="/static/app.js"></script>
+</body>
+</html>

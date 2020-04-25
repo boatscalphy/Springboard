@@ -1,0 +1,22 @@
+html {
+    font-family: Arial;
+}
+
+h1 {
+    text-align: center;
+}
+
+#cupcake_container {
+
+    display:flex;
+    justify-content:center;
+    flex-wrap: wrap;
+}
+
+.cupcake {
+    margin:1em;
+}
+
+h4 {
+    text-align:center;
+}
