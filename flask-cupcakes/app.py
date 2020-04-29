@@ -39,7 +39,8 @@ def get_cupcakes():
         new_cupcake = Cupcake(flavor=flavor, size=size, rating=rating, image=image)
         db.session.add(new_cupcake)
         db.session.commit()
-        return {"cupcake":create_json(new_cupcake)}
+        
+        return {"cupcake":create_json(new_cupcake)}, 201
 
 @app.route('/api/cupcakes/<int:id>', methods=["GET", "PATCH", "DELETE"])
 def get_cupcake(id):
