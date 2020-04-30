@@ -15,6 +15,8 @@
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
           <div class="navbar-nav ml-auto">
             {% if session.get('user') %}
+              <a class="nav-item nav-link btn btn-link" href="/users/{% block userlink %}{% endblock %}">{% block usertext %}{% endblock %}</a>
+            {% block username %}{% endblock %}
             <div class="m-auto">
                 <form action="/logout" method="POST" id="logout">
                     <button class="nav-item nav-link btn btn-link" formmethod="POST" form="logout">Logout</button>
@@ -27,6 +29,18 @@
           </div>
         </div>
     </nav>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-warning alert-dismissible fade show text-center" role="alert">
+            {{message}}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
 
     {% block content %}{% endblock %}
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
