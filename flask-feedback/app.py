@@ -40,7 +40,7 @@ def register():
             db.session.add(User(first_name=first_name, last_name=last_name, email=email, username=username, password=password_hash))
             db.session.commit()
             session['user'] = username
-            return redirect('/secret')
+            return redirect(f'/users/{username}')
 
         else:
             form['username'].errors.append('Username already exists.')
@@ -76,21 +76,13 @@ def login():
 
     return render_template('login.html', form=form)
 
-@app.route('/secret')
-def show_secret():
-
-    if session.get('user'):
-        return render_template('secret.html')
-
-    else:
-        return redirect('/register')
-
 @app.route('/users/<username>')
 def show_user(username):
-
+    
     if session.get('user'):
         user = User.query.get_or_404(username)
-        return render_template('user.html', user=user)
+        feedback = user.feedback
+        return render_template('user.html', user=user, feedback=feedback)
 
     else:
         return redirect('/register')
@@ -129,11 +121,64 @@ def feedback_form(username):
         return redirect(f'/users/{username}')
 
     elif session.get('user') == username:
-        return render_template('feedback.html', form=form)
+        return render_template('feedback_form.html', form=form)
 
     else:
         return redirect('/register')
 
+@app.route('/feedback')
+def feedback():
+
+    if session.get('user'):
+        return redirect(f'/users/{session.get("user")}')
+
+    else:
+        return redirect('/register')
+
+@app.route('/feedback/<int:feedback_id>')
+def show_feedback(feedback_id):
+
+    if session.get('user'):
+        feedback = Feedback.query.get_or_404(feedback_id)
+        return render_template('feedback.html', feedback=feedback)
+
+    else:
+        return redirect('/register')
+
+@app.route('/feedback/<int:feedback_id>/edit', methods=['GET', 'POST'])
+def edit_feedback(feedback_id):
+    feedback = Feedback.query.get_or_404(feedback_id)
+    form = FeedbackForm(obj=feedback)
+    
+    if form.validate_on_submit():
+        title = request.form.get('title')
+        content = request.form.get('content')
+        feedback.title = title
+        feedback.content = content
+        db.session.add(feedback)
+        db.session.commit()
+        flash('Feedback updated!')
+        return redirect(f'/users/{feedback.username}')
+
+    elif session.get('user') and feedback.username == session.get('user'):
+        return render_template('feedback_form.html', form=form)
+    
+    else:
+        flash('Insufficient permissions to edit feedback')
+        return redirect('/register')
+
+@app.route('/feedback/<int:feedback_id>/delete', methods=["POST"])
+def delete_feedback(feedback_id):
+        feedback = Feedback.query.get_or_404(feedback_id)
+
+        if session.get('user') and session.get('user') == feedback.username:
+            db.session.delete(feedback)
+            db.session.commit()
+            flash('Feedback deleted!')
+            return redirect(f'/users/{feedback.username}')
+
+        else:
+            return {'message': 'You are not allowed to delete this user'}, 401
 @app.route('/logout', methods=["POST"])
 def logout():
     session.pop('user', None)
