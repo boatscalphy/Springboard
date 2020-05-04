@@ -4,46 +4,56 @@ import random
 
 app = Flask(__name__)
 
-def check_contents(name, email, year, color):
+def check_contents(contents):
 
     return_error = False
     valid_colors = ['red', 'green', 'blue', 'orange']
-    URL = 'http://numersapi/'
+    URL = 'http://numbersapi.com'
     
     errors = {}
 
     num_fact = {}
     year_fact = {}
 
-    if name is None:
-        errors.update("name": ['name input is required'])
+    name = contents.get('name')
+    email = contents.get('email')
+    color = contents.get('color').lower()
+
+
+    try:
+        year = int(contents.get('year'))
+        if year < 1900 or year > 2000:
+            errors.update({"year": ['year input must be between 1900 and 2000']})
+            return_error = True
+    except ValueError:
+            errors.update({"year": ["please enter a valid year"]})
+            return_error = True
+
+    if name is "":
+        errors.update({"name": ['name input is required']})
         return_error = True
     
-    if email is None:
-        errors.update("email": ['email input is required'])
+    if email is "":
+        errors.update({"email": ['email input is required']})
         return_error = True
 
-    if year <= 1999 and year >= 2000:
-        errors.update("year": ['year input must be between 1999 and 2000'])
-        return_error = True
-    
-    if color is None:
-        errors.update('color': ['color input is required'])
+    if color is "":
+        errors.update({'color': ['color input is required']})
         return_error = True
     
     elif color not in valid_colors:
-        errors.update('color': ['color must be one of: red, green, orange, or blue'])
+        errors.update({'color': ['color must be one of: red, green, orange, or blue']})
         return_error = True
     
     if return_error:
-        return {errors}
+        return {"errors": errors}
 
     else:
         lucky_num = random.randint(0,100)
         headers = {"Content-Type": "application/json"}
 
         req_num = requests.get(f'{URL}/{lucky_num}', headers=headers)
-        num_data = req_year.json()
+        num_data = req_num.json()
         num_fact["fact"] = num_data['text']
         num_fact["num"] = num_data['number']
 
@@ -66,13 +76,8 @@ def homepage():
 @app.route('/api/get-lucky-num', methods = ["POST"])
 def lucky_num():
 
-    contents = request.json
-    name = contents.get('name')
-    email = contents.get('email')
-    year = contents.get('year')
-    color = contents.get('color')
-
-    res = check_contents(name, email, year, color)
+    contents = request.get_json(force=True)
+    res = check_contents(contents)
 
     return jsonify(res)
 
